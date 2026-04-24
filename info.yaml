@@ -1,15 +1,29 @@
+---
+# TinyTapeout project information
 project:
   title: "Traffic Light FSM"
   author: "Your Name"
+  slack: "@your_slack_username"
   description: "FSM-based traffic light controller"
   language: "Verilog"
+  clock_hz: 50000000   # Expected by the tools (50MHz)
+  tiles: "1x1"         # Required space allocation
 
-  top_module: "tt_um_traffic_light"   # 👈 SAME as Verilog module
-
+  top_module: "tt_um_traffic_light"
   source_files:
-    - "src/project.v"
+    - "project.v"      # Fixed path!
 
+# The pinout of your project. ALL sections must be completely filled.
 pinout:
+  ui_in:
+    - "unused"
+    - "unused"
+    - "unused"
+    - "unused"
+    - "unused"
+    - "unused"
+    - "unused"
+    - "unused"
   uo_out:
     - "NS Red"
     - "NS Yellow"
@@ -17,5 +31,23 @@ pinout:
     - "EW Red"
     - "EW Yellow"
     - "EW Green"
-    - "Unused"
-    - "Unused"
+    - "unused"
+    - "unused"
+  uio_in:
+    - "unused"
+    - "unused"
+    - "unused"
+    - "unused"
+    - "unused"
+    - "unused"
+    - "unused"
+    - "unused"
+  uio_out:
+    - "unused"
+    - "unused"
+    - "unused"
+    - "unused"
+    - "unused"
+    - "unused"
+    - "unused"
+    - "unused"
