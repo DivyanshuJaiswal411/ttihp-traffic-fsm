@@ -1,20 +1,7 @@
-<!---
-
-This file is used to generate your project datasheet. Please fill in the information below and delete any unused
-sections.
-
-You can also include images in this folder and reference them in the markdown. Each image must be less than
-512 kb in size, and the combined size of all images must be less than 1 MB.
--->
-
 ## How it works
 
-Explain how your project works
+This project implements a Finite State Machine (FSM) traffic light controller. It uses a 26-bit counter to divide the clock signal, creating human-visible multi-second delays between the light transitions (Green -> Yellow -> Red) for a standard 4-state North/South and East/West intersection.
 
 ## How to test
 
-Explain how to use your project
-
-## External hardware
-
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any
+Provide a clock signal (e.g., 50MHz) to the `clk` input and set `rst_n` high (1). Monitor the lower 6 bits of the `uo_out` pins. You will see the binary values corresponding to the traffic light states shifting automatically based on the internal counter.
