@@ -1,53 +1,44 @@
 ---
-# TinyTapeout project information
+# Tiny Tapeout project information
 project:
   title: "Traffic Light FSM"
-  author: "Your Name"
-  slack: "@your_slack_username"
+  author: "Divyanshu Jaiswal"
+  slack: ""
   description: "FSM-based traffic light controller"
   language: "Verilog"
-  clock_hz: 50000000   # Expected by the tools (50MHz)
-  tiles: "1x1"         # Required space allocation
-
+  clock_hz: 50000000
+  tiles: "1x1"
   top_module: "tt_um_traffic_light"
   source_files:
-    - "project.v"      # Fixed path!
+    - "project.v"
 
-# The pinout of your project. ALL sections must be completely filled.
+# Required by the latest TT build tools
+yaml_version: 6
+
 pinout:
-  ui_in:
-    - "unused"
-    - "unused"
-    - "unused"
-    - "unused"
-    - "unused"
-    - "unused"
-    - "unused"
-    - "unused"
-  uo_out:
-    - "NS Red"
-    - "NS Yellow"
-    - "NS Green"
-    - "EW Red"
-    - "EW Yellow"
-    - "EW Green"
-    - "unused"
-    - "unused"
-  uio_in:
-    - "unused"
-    - "unused"
-    - "unused"
-    - "unused"
-    - "unused"
-    - "unused"
-    - "unused"
-    - "unused"
-  uio_out:
-    - "unused"
-    - "unused"
-    - "unused"
-    - "unused"
-    - "unused"
-    - "unused"
-    - "unused"
-    - "unused"
+  ui[0]: "unused"
+  ui[1]: "unused"
+  ui[2]: "unused"
+  ui[3]: "unused"
+  ui[4]: "unused"
+  ui[5]: "unused"
+  ui[6]: "unused"
+  ui[7]: "unused"
+
+  uo[0]: "NS Red"
+  uo[1]: "NS Yellow"
+  uo[2]: "NS Green"
+  uo[3]: "EW Red"
+  uo[4]: "EW Yellow"
+  uo[5]: "EW Green"
+  uo[6]: "unused"
+  uo[7]: "unused"
+
+  uio[0]: "unused"
+  uio[1]: "unused"
+  uio[2]: "unused"
+  uio[3]: "unused"
+  uio[4]: "unused"
+  uio[5]: "unused"
+  uio[6]: "unused"
+  uio[7]: "unused"
