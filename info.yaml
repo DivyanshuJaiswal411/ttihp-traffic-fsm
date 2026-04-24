@@ -4,7 +4,7 @@ project:
   description: "FSM-based traffic light controller"
   language: "Verilog"
 
-  top_module: "tt_um_yourusername"   # 👈 SAME as Verilog module
+  top_module: "tt_um_DivyanshuJaiswal411"   # 👈 SAME as Verilog module
 
   source_files:
     - "src/user_module.v"
