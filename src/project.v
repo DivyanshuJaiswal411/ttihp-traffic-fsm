@@ -1,59 +1,71 @@
-module tt_um_DivyanshuJaiswal411 (   // 👈 CHANGE THIS to your GitHub username
-    input  wire [7:0] ui_in,
-    output wire [7:0] uo_out,
-    input  wire clk,
-    input  wire rst_n
-); 
+`default_nettype none
 
-    wire enable = ui_in[0];
-    wire pedestrian = ui_in[1];
+module tt_um_traffic_light (
+    input  wire [7:0] ui_in,    // Dedicated inputs
+    output wire [7:0] uo_out,   // Dedicated outputs
+    input  wire [7:0] uio_in,   // IOs: Input path
+    output wire [7:0] uio_out,  // IOs: Output path
+    output wire [7:0] uio_oe,   // IOs: Enable path (active high: 0=input, 1=output)
+    input  wire       ena,      // always 1 when the design is powered
+    input  wire       clk,      // clock
+    input  wire       rst_n     // reset_n - low to reset
+);
+
+    // Disable bidirectional IOs as we don't need them for this project
+    assign uio_out = 8'b0;
+    assign uio_oe  = 8'b0;
+
+    // FSM State Encoding
+    localparam S_NS_G_EW_R = 2'b00;
+    localparam S_NS_Y_EW_R = 2'b01;
+    localparam S_NS_R_EW_G = 2'b10;
+    localparam S_NS_R_EW_Y = 2'b11;
 
     reg [1:0] state;
-    reg [23:0] counter;
+    reg [25:0] counter; // 26-bit counter to create a visible delay
 
-    // States
-    localparam S0 = 2'd0;
-    localparam S1 = 2'd1;
-    localparam S2 = 2'd2;
-    localparam S3 = 2'd3;
-
-    // Timing
-    localparam MAX_COUNT = 24'd2_000_000;
-
-    // FSM logic
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            state <= S0;
-            counter <= 0;
-        end else if (enable) begin
-            if (counter >= MAX_COUNT) begin
-                counter <= 0;
-                case (state)
-                    S0: state <= S1;
-                    S1: state <= S2;
-                    S2: state <= S3;
-                    S3: state <= S0;
-                endcase
-            end else begin
-                counter <= counter + 1;
-            end
-        end
-    end
-
-    // Output logic
+    // Output logic (Combinational)
+    // Bit mapping: {Empty, Empty, EW_Green, EW_Yellow, EW_Red, NS_Green, NS_Yellow, NS_Red}
     reg [5:0] lights;
+    
+    // Assign the lower 6 bits of uo_out to our lights, tie top 2 bits to 0
+    assign uo_out = {2'b00, lights};
 
     always @(*) begin
-        case (state)
-            S0: lights = 6'b001100; // A=Green, B=Red
-            S1: lights = 6'b010100; // A=Yellow, B=Red
-            S2: lights = 6'b100001; // A=Red, B=Green
-            S3: lights = 6'b100010; // A=Red, B=Yellow
-            default: lights = 6'b100100;
+        case(state)
+            // lights = {EW_G, EW_Y, EW_R, NS_G, NS_Y, NS_R}
+            S_NS_G_EW_R: lights = 6'b001_100; // EW Red (bit 3), NS Green (bit 2)
+            S_NS_Y_EW_R: lights = 6'b001_010; // EW Red (bit 3), NS Yellow (bit 1)
+            S_NS_R_EW_G: lights = 6'b100_001; // EW Green (bit 5), NS Red (bit 0)
+            S_NS_R_EW_Y: lights = 6'b010_001; // EW Yellow (bit 4), NS Red (bit 0)
+            default:     lights = 6'b001_001; // Default to Red/Red for safety
         endcase
     end
 
-    assign uo_out[5:0] = lights;
-    assign uo_out[7:6] = 2'b00;
+    // State Transitions and Counter (Sequential)
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            state   <= S_NS_G_EW_R;
+            counter <= 0;
+        end else begin
+            counter <= counter + 1;
+
+            // Timer thresholds. Assuming a fast clock (e.g., 10-50MHz), 
+            // these large numbers divide the clock to create a multi-second delay.
+            if (state == S_NS_G_EW_R && counter == 26'd20_000_000) begin
+                state <= S_NS_Y_EW_R;
+                counter <= 0;
+            end else if (state == S_NS_Y_EW_R && counter == 26'd5_000_000) begin
+                state <= S_NS_R_EW_G;
+                counter <= 0;
+            end else if (state == S_NS_R_EW_G && counter == 26'd20_000_000) begin
+                state <= S_NS_R_EW_Y;
+                counter <= 0;
+            end else if (state == S_NS_R_EW_Y && counter == 26'd5_000_000) begin
+                state <= S_NS_G_EW_R;
+                counter <= 0;
+            end
+        end
+    end
 
 endmodule
