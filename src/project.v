@@ -3,7 +3,7 @@ module tt_um_DivyanshuJaiswal411 (   // 👈 CHANGE THIS to your GitHub username
     output wire [7:0] uo_out,
     input  wire clk,
     input  wire rst_n
-);
+); 
 
     wire enable = ui_in[0];
     wire pedestrian = ui_in[1];
